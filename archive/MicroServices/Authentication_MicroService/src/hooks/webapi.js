@@ -121,6 +121,7 @@ var validateInputJson = function (inputRequest, callback) {
     var checkQueryParams = function (inputObj, callback) {
         var inputQueryObj = inputObj.input.query;
         var configQueryObj = inputRequest.query;
+
         if (Object.keys(inputQueryObj).length) {
             if (validateJson(inputQueryObj, configQueryObj)) {
                 return callback(null, inputObj);
@@ -244,9 +245,8 @@ var createJwt = function (input, callback) {
 
         delete tokenDetails.iat;
         delete tokenDetails.request
-        var currentDate = new Date();
-        var gmtValue = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000)
-        tokenDetails.iat = Math.floor(gmtValue / 1000) - 30 //TODO :: Check this if this is reqd for expiry -- backdate a jwt 30 seconds
+        tokenDetails.iat = Math.floor(Date.now() / 1000) - 30 //TODO :: Check this if this is reqd for expiry -- backdate a jwt 30 seconds
+    
         tokenDetails.statusCode = 303;
         tokenDetails.nextCall = '/webapi/validate/*';
     }
@@ -301,10 +301,7 @@ var createJwt = function (input, callback) {
 
 
         delete tokenDetails.iat;
-        var currentDate = new Date();
-        var gmtValue = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000)
-        tokenDetails.iat = Math.floor(gmtValue / 1000) - 30 //TODO :: Check this if this is reqd for expiry -- backdate a jwt 30 seconds
-
+        tokenDetails.iat = Math.floor(Date.now() / 1000) - 30 //TODO :: Check this if this is reqd for expiry -- backdate a jwt 30 seconds
 
     }
 
@@ -379,6 +376,8 @@ function executeWepAPI(req, res) {
             res.send({ "error": err }, 400);
         }
         else {
+
+
             //forming the options object with the url, query string , headers and body
             var options = {};
             //url and method are taken from the config values
